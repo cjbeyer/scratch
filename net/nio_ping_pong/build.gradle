@@ -1,1 +1,3 @@
 apply plugin: 'java'
+
+manifest.mainAttributes("Main-Class" : "cjb.test.niopingpong.PingPong")
