@@ -1,3 +1,15 @@
 apply plugin: 'java'
 
-manifest.mainAttributes("Main-Class" : "cjb.test.niopingpong.PingPong")
+repositories {
+  mavenCentral()
+}
+
+dependencies {
+  testCompile group: 'junit', name: 'junit', version: '4.11+'
+}
+
+jar {
+  manifest {
+    attributes 'Main-Class': 'cjb.test.niopingpong.PingPong'
+  }
+}

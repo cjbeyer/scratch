@@ -4,7 +4,6 @@ import java.io.IOException;
 
 public class PingPong {
 
-  private static final int PORT = 8000;
   private static final int SIZE = 1024;
   private static final int COUNT = 50;
 
@@ -15,11 +14,11 @@ public class PingPong {
   public static void main(String[] args) throws IOException {
 
     // start the server
-    PongServer server = new PongServer(PORT);
+    PongServer server = new PongServer(0);
     new Thread(server, "Server").start();
 
     // start the client
-    PingClient.pingServer("localhost", PORT, SIZE, COUNT);
+    PingClient.pingServer("localhost", server.port(), SIZE, COUNT);
 
     System.exit(0);
   }

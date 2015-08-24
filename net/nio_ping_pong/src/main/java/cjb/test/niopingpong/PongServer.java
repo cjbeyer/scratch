@@ -24,13 +24,16 @@ import java.util.concurrent.locks.ReentrantLock;
  * 2) Reads a int msg size and byte block of data
  * 3) Writes back an int msg size and the block of data
  */
-class PongServer implements Runnable {
+class PongServer implements Runnable, AutoCloseable {
 
   /** Default size of the input buffers. */
   private static final int DEFAULT_INPUT_BUFFER_SIZE = 8192;
 
   /** The Selector that all sockets will use. */
   private final Selector selector;
+
+  /** The ServerSocket that is opened. */
+  private final ServerSocketChannel serverChannel;
 
   /** Lock to guard access to the Selector. */
   private final Lock selectorLock = new ReentrantLock();
@@ -51,12 +54,22 @@ class PongServer implements Runnable {
     selector = SelectorProvider.provider().openSelector();
 
     // create the server sock and set it to non-blocking
-    ServerSocketChannel serverChannel = ServerSocketChannel.open();
+    serverChannel = ServerSocketChannel.open();
     serverChannel.configureBlocking(false);
 
     // bind the socket to the specified local port and register it to accept connections
     serverChannel.socket().bind(new InetSocketAddress(port));
     serverChannel.register(selector, SelectionKey.OP_ACCEPT);
+  }
+
+  /** Returns the local port number that was bound to. */
+  public final int port() {
+    return serverChannel.socket().getLocalPort();
+  }
+
+  @Override
+  public void close() throws IOException {
+    serverChannel.close();
   }
 
   /** Main I/O Loop. */
